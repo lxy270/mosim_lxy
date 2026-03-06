@@ -12,8 +12,8 @@ training:
   task_name: 'roll'
   save_path : 'ckpt/roll'
 data:
-  train_data_path : '/scorpio/home/yubei-stu-2/mosim/data/trans-roll-zero.npz'
-  test_data_path : '/scorpio/home/yubei-stu-2/mosim/data/trans-roll-zero-test.npz'
+  train_data_path : 'data/trans-roll-zero.npz'
+  test_data_path : 'data/trans-roll-zero-test.npz'
 model:
   ## model_param:
   q_dim: 7

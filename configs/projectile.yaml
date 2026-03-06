@@ -2,30 +2,28 @@
 training:
   training_stage: -1
   seed: 1887299
-  lr: 0.00004
+  lr: 0.00004 # ori 0.00004
   num_epochs : 1000000000
-  t : 0.02
+  t : 0.002 # ori 0.02
   batch_size : 5000
   keep_top : 5
 
-  # from_ckpt: 'ckpt/go/go_10070519/latest_ckpt_48M.pth'
-  comment: 'tvar'
-  task_name: 'go'
-  act_mode: 'random'
-  task: 'go'
-  save_path : 'ckpt/go'
+  comment: ''
+  task_name: 'projectile'
+  save_path : 'ckpt/projectile'
 data:
-  train_data_path : 'data/trans-go-random.npz'
-  test_data_path : 'data/trans-go-random-test.npz'
+  train_data_path : 'data/trans-projectile-zero.npz'
+  test_data_path : 'data/trans-projectile-zero-test.npz'
 model:
   ## model_param:
-  q_dim: 361
-  v_dim : 2
+  q_dim: 7
+  v_dim : 6
   action_dim : 1
+  quat_config : [3,10] # [3, 3+nq]
 
-  real_t : 0.02
+  real_t : 0.002
   activation : 'softplus' #['softplus','atan','relu']
-  dynamic_model_type:  'resnet_direct'  #['rigid_body','resnet']
+  dynamic_model_type:  'resnet'  #['rigid_body','resnet']
   ### Residual Module:
   dynamics_hidden_block_num : 7
   dynamics_network_width : 64

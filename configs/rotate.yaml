@@ -12,8 +12,8 @@ training:
   task_name: 'rotate'
   save_path : 'ckpt/rotate'
 data:
-  train_data_path : '/scorpio/home/yubei-stu-2/mosim/data/trans-rotate_center-zero.npz'
-  test_data_path : '/scorpio/home/yubei-stu-2/mosim/data/trans-rotate_center-zero-test.npz'
+  train_data_path : 'data/trans-rotate_center-zero.npz'
+  test_data_path : 'data/trans-rotate_center-zero-test.npz'
 model:
   ## model_param:
   q_dim: 1
