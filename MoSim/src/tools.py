@@ -447,7 +447,7 @@ def train_ode(
                     losses[:, dim].mean().item()
                 )
             wandb.log(log_data, step=step)
-
+        print('out')
         model.eval()
         with torch.no_grad():
             if not multistep_test:
@@ -509,6 +509,17 @@ def train_ode(
             os.makedirs(checkpoint_dir, exist_ok=True)
         best_path = os.path.join(checkpoint_dir, f'best_img.pth')
         model.eval()
+
+        def theta_to_sincos(state):
+            """
+            state: (..., 2), where state[..., 0] = theta, state[..., 1] = theta_dot
+            return: (..., 3), [sin(theta), cos(theta), theta_dot]
+            """
+            assert state.shape[-1] == 2, f"Expected last dim = 2, got {state.shape}"
+            theta = state[..., 0]
+            theta_dot = state[..., 1]
+            return torch.stack([torch.sin(theta), torch.cos(theta), theta_dot],dim=-1)
+        
         with torch.no_grad(): # img_test
             # transformer: a[0:10]+(h_0+o[0:9]) rec o[0:10], o[9]+a[10:] img o[10:]
             # dreamer: a[0:10]+(h_0+o[0:10]) rec, a[10:] img o[10:]
@@ -529,9 +540,14 @@ def train_ode(
                 current_state = next_state
             prediction_test = torch.stack(prediction_test).permute(1, 0, 2) # [t, b, d] -> [b, t, d]
             img_loss = torch.nn.functional.mse_loss(prediction_test, target_test[:, condition_step-1:])
+            print('img_loss', img_loss)
             # img_losses = {f'img_loss{k}': torch.nn.functional.mse_loss(prediction_test[:, :k], target_test[:, condition_step-1:condition_step-1+k]) for k in range(10, 90, 10)}
             # wandb.log(img_losses, step=step)
             wandb.log({'rec_loss': rec_loss, 'img_loss': img_loss}, step=step)
+            if 'pendulum' in task_name:
+                rec_loss_sincos = torch.nn.functional.mse_loss(theta_to_sincos(rec_test), theta_to_sincos(state_test[:, 1:condition_step]))
+                img_loss_sincos = torch.nn.functional.mse_loss(theta_to_sincos(prediction_test), theta_to_sincos(target_test[:, condition_step-1:]))
+                wandb.log({'rec_loss_sin': rec_loss_sincos, 'img_loss_sin': img_loss_sincos}, step=step)
             if img_loss < best_img_loss:
                 best_img_loss = img_loss
                 wandb.log({'best_img_loss': best_img_loss}, step=step)

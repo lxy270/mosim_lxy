@@ -2,24 +2,24 @@
 training:
   training_stage: -1
   seed: 1887299
-  lr: 0.0004 # ori 0.00004
+  lr: 0.0004 # 0.00004
   num_epochs : 1000000000
   t : 0.02
   batch_size : 5000
   keep_top : 5
 
-  comment: 'llr'
-  task_name: 'slope'
-  save_path : 'ckpt/slope'
+  comment: 'intermix'
+  task: 'humanoid'
+  save_path : 'ckpt/humanoid'
 data:
-  train_data_path : 'data/trans-slope-zero.npz'
-  test_data_path : 'data/trans-slope-zero-test.npz'
+  train_data_path : 'data/trans-humanoid-intermix.npz'
+  test_data_path : 'data/trans-humanoid-intermix-test.npz'
 model:
   ## model_param:
-  q_dim: 7
-  v_dim : 6
-  action_dim : 1
-  quat_config : [3,10] # [3, 3+nq]
+  q_dim: 28
+  v_dim : 27
+  action_dim : 21
+  quat_config : [3,31]
 
   real_t : 0.02
   activation : 'softplus' #['softplus','atan','relu']
